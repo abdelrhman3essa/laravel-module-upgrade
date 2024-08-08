@@ -35,10 +35,19 @@ class CreateCrudCommand extends Command
             return $this->error('Your project does not have modules package. Run "composer require nwidart/laravel-modules" to install it.');
         }
 
-        $this->getModuleName();
+        $this->getModuleName()
+            ->getModelName()
+            ->getModelFillable()
+            ->getPrefix();
+
+        $this->info('Creating the crud files ...');
+
+        $this->crudCommandHelper->createCrudFiles();
+
+        $this->info('Crud files created successfully ...');
     }
 
-    private function getModuleName()
+    private function getModuleName(): self
     {
         $moduleName = $this->ask('Your Module name?');
 
@@ -48,5 +57,28 @@ class CreateCrudCommand extends Command
             $this->crudCommandHelper->createModule();
             $this->info('Module created successfully.');
         }
+
+        return $this;
+    }
+
+    private function getModelName(): self
+    {
+        $this->crudCommandHelper->setModelName($this->ask('Your Model name?'));
+
+        return $this;
+    }
+
+    private function getModelFillable(): self
+    {
+        $this->crudCommandHelper->setModelFillable($this->ask('Your Model fillable?'));
+
+        return $this;
+    }
+
+    private function getPrefix(): self
+    {
+        $this->crudCommandHelper->setPrefix($this->ask('Your Model prefix?'));
+
+        return $this;
     }
 }
