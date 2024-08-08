@@ -61,7 +61,10 @@ class CrudCommandHelper
     {
         $this->projectHaveModule() ?: $this->createModule();
 
-        $this->createRequests()->createController();
+        $this->createRequests()
+            ->createController()
+            ->createFactory()
+            ->createSeeder();
     }
 
     public function createRequests(): self
@@ -89,6 +92,24 @@ class CrudCommandHelper
         $createModelCommand = 'module:make-model ' . $this->modelName . ' -m --fillable=' . implode(',', $this->modelFillable) . ' ' . $this->moduleName;
 
         $this->callArtisan($createModelCommand);
+
+        return $this;
+    }
+
+    public function createSeeder(): self
+    {
+        $createSeederCommand = 'module:make-seed ' . $this->moduleName . 'Seeder';
+
+        $this->callArtisan($createSeederCommand);
+
+        return $this;
+    }
+
+    public function createFactory(): self
+    {
+        $createSeederCommand = 'module:make-factory ' . $this->moduleName . 'Factory';
+
+        $this->callArtisan($createSeederCommand);
 
         return $this;
     }
