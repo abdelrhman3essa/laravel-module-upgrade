@@ -7,31 +7,31 @@ use Nwidart\Modules\Facades\Module;
 
 class CrudCommandHelper
 {
-    public static string $moduleName;
+    public string $moduleName;
 
-    public static function projectHaveModulePackage(): bool
+    public function projectHaveModulePackage(): bool
     {
         return strlen(config('modules.namespace')) > 0;
     }
 
-    public static function projectHaveModule(): bool
+    public function projectHaveModule(): bool
     {
-        return self::projectHaveModulePackage() && Module::has(static::$moduleName);
+        return self::projectHaveModulePackage() && Module::has($this->moduleName);
     }
 
-    public static function createModule(): void
+    public function createModule(): void
     {
-        $createModuleCommand = 'module:make ' . static::$moduleName;
+        $createModuleCommand = 'module:make ' . $this->moduleName;
 
-        static::callArtisan($createModuleCommand);
+        $this->callArtisan($createModuleCommand);
     }
 
-    public static function setModuleName(string $name): void
+    public function setModuleName(string $name): void
     {
-        static::$moduleName = $name;
+        $this->moduleName = $name;
     }
 
-    public static function callArtisan(string $command): void
+    public function callArtisan(string $command): void
     {
         Artisan::call($command);
     }

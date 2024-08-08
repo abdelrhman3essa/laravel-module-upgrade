@@ -21,12 +21,17 @@ class CreateCrudCommand extends Command
      */
     protected $description = 'Create a new CRUD.';
 
+    public function __construct(private CrudCommandHelper $crudCommandHelper)
+    {
+        parent::__construct();
+    }
+
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        if (!CrudCommandHelper::projectHaveModulePackage()) {
+        if (!$this->crudCommandHelper->projectHaveModulePackage()) {
             return $this->error('Your project does not have modules package. Run "composer require nwidart/laravel-modules" to install it.');
         }
 
@@ -37,10 +42,10 @@ class CreateCrudCommand extends Command
     {
         $moduleName = $this->ask('Your Module name?');
 
-        CrudCommandHelper::setModuleName($moduleName);
+        $this->crudCommandHelper->setModuleName($moduleName);
 
-        if (!CrudCommandHelper::projectHaveModule()) {
-            CrudCommandHelper::createModule();
+        if (!$this->crudCommandHelper->projectHaveModule()) {
+            $this->crudCommandHelper->createModule();
             $this->info('Module created successfully.');
         }
     }
