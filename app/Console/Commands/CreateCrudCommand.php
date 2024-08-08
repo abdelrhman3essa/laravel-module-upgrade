@@ -53,11 +53,6 @@ class CreateCrudCommand extends Command
 
         $this->crudCommandHelper->setModuleName($moduleName);
 
-        if (!$this->crudCommandHelper->projectHaveModule()) {
-            $this->crudCommandHelper->createModule();
-            $this->info('Module created successfully.');
-        }
-
         return $this;
     }
 

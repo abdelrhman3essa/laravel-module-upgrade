@@ -59,16 +59,38 @@ class CrudCommandHelper
 
     public function createCrudFiles(): void
     {
-        $this->createRequests();
+        $this->projectHaveModule() ?: $this->createModule();
+
+        $this->createRequests()->createController();
     }
 
-    public function createRequests(): void
+    public function createRequests(): self
     {
         $storeRequestCommand = 'module:make-request ' . $this->prefix . '/Store' . $this->modelName . 'Request ' . $this->moduleName;
         $updateRequestCommand = 'module:make-request ' . $this->prefix . '/Update' . $this->modelName . 'Request ' . $this->moduleName;
 
         $this->callArtisan($storeRequestCommand);
         $this->callArtisan($updateRequestCommand);
+
+        return $this;
+    }
+
+    public function createController(): self
+    {
+        $createControllerCommand = 'module:make-controller ' . $this->prefix . '/' . $this->modelName . 'Controller ' . $this->moduleName;
+
+        $this->callArtisan($createControllerCommand);
+
+        return $this;
+    }
+
+    public function createModel(): self
+    {
+        $createModelCommand = 'module:make-model ' . $this->modelName . ' -m --fillable=' . implode(',', $this->modelFillable) . ' ' . $this->moduleName;
+
+        $this->callArtisan($createModelCommand);
+
+        return $this;
     }
 
     public function callArtisan(string $command): void
