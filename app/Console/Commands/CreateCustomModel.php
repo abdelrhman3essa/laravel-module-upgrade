@@ -32,6 +32,7 @@ class CreateCustomModel extends Command
 
         $this->setStubVariables([
             'FILLABLE' => $this->getFillable(),
+            'CASTS' => $this->getCasts(),
         ]);
 
         $this->createStub();
@@ -59,6 +60,38 @@ class CreateCustomModel extends Command
 
     private function getFillable(): string
     {
-        return '\'' . implode("', '", explode(',', $this->argument('fillable'))) . '\'';
+        $fillable = explode(',', $this->argument('fillable'));
+
+        $preparedFillable = '';
+
+        foreach ($fillable as $item) {
+            $preparedFillable .= "\t\t'{$item}', \n";
+        }
+
+        return $this->removeExtraLine($preparedFillable);
+    }
+
+    private function getCasts(): string
+    {
+        $preparedCasts = '';
+
+        $fillable = explode(',', $this->argument('fillable'));
+
+        foreach ($fillable as $item) {
+            $preparedCast = $this->prepareCast($item);
+            is_null($preparedCast) ?: $preparedCasts .= $preparedCast;
+        }
+
+        return $this->removeExtraLine($preparedCasts);
+    }
+
+    private function prepareCast(string $item): ?string
+    {
+        return match(true) {
+            str_ends_with($item, '_at') => "\t\t\t'{$item}' => 'datetime',\n",
+            str_starts_with($item, 'is_') => "\t\t\t'{$item}' => 'boolean',\n",
+            str_contains($item, 'password') => "\t\t\t'{$item}' => 'hashed',\n",
+            default => null,
+        };
     }
 }

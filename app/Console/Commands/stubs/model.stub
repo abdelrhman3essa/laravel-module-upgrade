@@ -12,5 +12,20 @@ class $CLASS$ extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = [$FILLABLE$];
+    protected $fillable = [
+$FILLABLE$
+    ];
+
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+$CASTS$
+        ];
+    }
 }

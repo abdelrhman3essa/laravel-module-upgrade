@@ -166,4 +166,9 @@ trait CreateStubHelper
         $this->stubPath = null;
         $this->stubVariables = [];
     }
+
+    private function removeExtraLine(string $item): string
+    {
+        return rtrim($item, "\n");
+    }
 }
