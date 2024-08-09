@@ -105,7 +105,7 @@ class CrudCommandHelper
 
         $this->callArtisan('module:make-model ' . $createModelCommand . $this->moduleName);
 
-        $this->setMessage('Model ' . $createModelCommand . ' Created.');
+        $this->setMessage('Model ' . $this->modelName . ' Created.');
 
         return $this;
     }
