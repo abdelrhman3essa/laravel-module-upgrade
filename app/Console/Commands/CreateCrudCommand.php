@@ -44,6 +44,8 @@ class CreateCrudCommand extends Command
 
         $this->crudCommandHelper->createCrudFiles();
 
+        $this->showMessages($this->crudCommandHelper->getMessages());
+
         $this->info('Crud files created successfully ...');
     }
 
@@ -75,5 +77,12 @@ class CreateCrudCommand extends Command
         $this->crudCommandHelper->setPrefix($this->ask('Your Model prefix?'));
 
         return $this;
+    }
+
+    private function showMessages(array $messages): void
+    {
+        foreach ($messages as $message) {
+            $this->info($message);
+        }
     }
 }

@@ -7,26 +7,29 @@ use Nwidart\Modules\Facades\Module;
 
 class CrudCommandHelper
 {
-    public string $moduleName;
-    public string $modelName;
-    public string $prefix;
-    public array $modelFillable;
+    private string $moduleName;
+    private string $modelName;
+    private string $prefix;
+    private array $messages = [];
+    private array $modelFillable;
 
     public function projectHaveModulePackage(): bool
     {
         return strlen(config('modules.namespace')) > 0;
     }
 
-    public function projectHaveModule(): bool
+    private function projectHaveModule(): bool
     {
         return self::projectHaveModulePackage() && Module::has($this->moduleName);
     }
 
-    public function createModule(): void
+    private function createModule(): void
     {
         $createModuleCommand = 'module:make ' . $this->moduleName;
 
         $this->callArtisan($createModuleCommand);
+
+        $this->setMessage('Module ' . $this->moduleName . ' Created.');
     }
 
     public function setModuleName(string $name): void
@@ -62,60 +65,96 @@ class CrudCommandHelper
         $this->projectHaveModule() ?: $this->createModule();
 
         $this->createRequests()
+            ->createModel()
+            ->createService()
             ->createController()
             ->createFactory()
             ->createSeeder();
     }
 
-    public function createRequests(): self
+    private function createRequests(): self
     {
-        $storeRequestCommand = 'module:make-request ' . $this->prefix . '/Store' . $this->modelName . 'Request ' . $this->moduleName;
-        $updateRequestCommand = 'module:make-request ' . $this->prefix . '/Update' . $this->modelName . 'Request ' . $this->moduleName;
+        $storeRequestCommand = $this->prefix . '/Store' . $this->modelName . 'Request ';
+        $updateRequestCommand = $this->prefix . '/Update' . $this->modelName . 'Request ';
 
-        $this->callArtisan($storeRequestCommand);
-        $this->callArtisan($updateRequestCommand);
+        $this->callArtisan('module:make-request ' . $storeRequestCommand . $this->moduleName);
+
+        $this->setMessage('Request ' . $storeRequestCommand . ' Created.');
+
+        $this->callArtisan('module:make-request ' . $updateRequestCommand . $this->moduleName);
+
+        $this->setMessage('Request ' . $storeRequestCommand . ' Created.');
 
         return $this;
     }
 
-    public function createController(): self
+    private function createController(): self
     {
-        $createControllerCommand = 'module:make-controller ' . $this->prefix . '/' . $this->modelName . 'Controller ' . $this->moduleName;
+        $createControllerCommand = $this->prefix . '/' . $this->modelName . 'Controller ';
 
-        $this->callArtisan($createControllerCommand);
+        $this->callArtisan('module:make-controller ' . $createControllerCommand . $this->moduleName);
+
+        $this->setMessage('Controller ' . $createControllerCommand . ' Created.');
 
         return $this;
     }
 
-    public function createModel(): self
+    private function createModel(): self
     {
-        $createModelCommand = 'module:make-model ' . $this->modelName . ' -m --fillable=' . implode(',', $this->modelFillable) . ' ' . $this->moduleName;
+        $createModelCommand = $this->modelName . ' -m --fillable=' . implode(',', $this->modelFillable) . ' ';
 
-        $this->callArtisan($createModelCommand);
+        $this->callArtisan('module:make-model ' . $createModelCommand . $this->moduleName);
+
+        $this->setMessage('Model ' . $createModelCommand . ' Created.');
 
         return $this;
     }
 
-    public function createSeeder(): self
+    private function createSeeder(): self
     {
-        $createSeederCommand = 'module:make-seed ' . $this->moduleName . 'Seeder';
+        $createSeederCommand = $this->modelName . 'Seeder ';
 
-        $this->callArtisan($createSeederCommand);
+        $this->callArtisan('module:make-seed ' . $createSeederCommand . $this->moduleName);
+
+        $this->setMessage('Seeder ' . $createSeederCommand . ' Created.');
 
         return $this;
     }
 
-    public function createFactory(): self
+    private function createFactory(): self
     {
-        $createSeederCommand = 'module:make-factory ' . $this->moduleName . 'Factory';
+        $createFactoryCommand = $this->modelName . 'Factory ';
 
-        $this->callArtisan($createSeederCommand);
+        $this->callArtisan('module:make-factory ' . $createFactoryCommand . $this->moduleName);
+
+        $this->setMessage('Factory ' . $createFactoryCommand . ' Created.');
 
         return $this;
     }
 
-    public function callArtisan(string $command): void
+    private function createService(): self
+    {
+        $createServiceCommand = $this->prefix . '/' . $this->modelName . 'Service ';
+
+        $this->callArtisan('module:make-class ' . $createServiceCommand . $this->moduleName);
+
+        $this->setMessage('Service ' . $createServiceCommand . ' Created.');
+
+        return $this;
+    }
+
+    private function callArtisan(string $command): void
     {
         Artisan::call($command);
+    }
+
+    private function setMessage(string $message): void
+    {
+        $this->messages[] = $message;
+    }
+
+    public function getMessages(): array
+    {
+        return $this->messages;
     }
 }
