@@ -55,7 +55,7 @@ class CrudCommandHelper
             $fullPrefix .= ucfirst($prefix) . '/';
         }
 
-        $fullPrefix .=  $this->moduleName;
+        $fullPrefix .=  $this->modelName;
 
         $this->prefix = $fullPrefix;
     }
