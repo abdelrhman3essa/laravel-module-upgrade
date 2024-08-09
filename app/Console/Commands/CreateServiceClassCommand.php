@@ -2,8 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Console\Commands\traits\CreateStubHelper;
+use Illuminate\Support\Str;
 use Illuminate\Console\Command;
+use App\Console\Commands\traits\CreateStubHelper;
 
 class CreateServiceClassCommand extends Command
 {
@@ -31,7 +32,9 @@ class CreateServiceClassCommand extends Command
         $this->setStubPath(__DIR__ . '/stubs/service.stub');
 
         $this->setStubVariables([
-            //
+            'MODEL_IMPORT' => $this->getModelImport(),
+            'MODEL' => $this->argument('model'),
+            'CAMEL_MODEL' => '$' . Str::camel($this->argument('model')),
         ]);
 
         $this->createStub();
@@ -55,5 +58,10 @@ class CreateServiceClassCommand extends Command
         is_null($this->className) ? $this->className = $this->argument('model') . 'Service' : $this->className;
 
         return $this->className;
+    }
+
+    public function getModelImport(): string
+    {
+        return 'use ' . config('modules.namespace') . '\\' . $this->argument('module') . '\\Models\\' . $this->argument('model') . ';';
     }
 }

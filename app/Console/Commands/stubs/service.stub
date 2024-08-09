@@ -1,8 +1,33 @@
 <?php
 
 namespace $NAMESPACE$;
+$MODEL_IMPORT$
 
 class $CLASS$
 {
-    //
+    public function index()
+    {
+        return $MODEL$::get();
+    }
+
+    public function store(array $CAMEL_MODEL$Data)
+    {
+        return $MODEL$::store($CAMEL_MODEL$Data);
+    }
+
+    public function show($MODEL$ $CAMEL_MODEL$)
+    {
+        return $CAMEL_MODEL$;
+    }
+
+    public function update(array $CAMEL_MODEL$Data, $MODEL$ $CAMEL_MODEL$)
+    {
+        $CAMEL_MODEL$->update($CAMEL_MODEL$Data);
+        return $CAMEL_MODEL$;
+    }
+
+    public function destroy($MODEL$ $CAMEL_MODEL$)
+    {
+        $CAMEL_MODEL$->delete();
+    }
 }

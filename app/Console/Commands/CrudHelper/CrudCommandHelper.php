@@ -62,7 +62,7 @@ class CrudCommandHelper
 
     public function createCrudFiles(): void
     {
-        $this->createModel();
+        $this->createService();
         dd(0);
         $this->projectHaveModule() ?: $this->createModule();
 
