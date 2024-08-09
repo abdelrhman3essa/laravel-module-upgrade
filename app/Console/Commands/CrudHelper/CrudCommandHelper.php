@@ -134,11 +134,9 @@ class CrudCommandHelper
 
     private function createService(): self
     {
-        $createServiceCommand = $this->prefix . '/' . $this->modelName . 'Service ';
+        $this->callArtisan('module:make-service-class ' . $this->modelName . ' ' . str_replace('/', '\\\\', $this->prefix) . ' ' . $this->moduleName);
 
-        $this->callArtisan('module:make-class ' . $createServiceCommand . $this->moduleName);
-
-        $this->setMessage('Service ' . $createServiceCommand . ' Created.');
+        $this->setMessage('Service ' . $this->moduleName . '/Services/' . $this->prefix . $this->modelName . 'Service' . ' Created.');
 
         return $this;
     }

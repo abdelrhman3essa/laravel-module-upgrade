@@ -5,14 +5,14 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 
-class CreateServiceClassCommnad extends Command
+class CreateServiceClassCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'module:make-service-class {model} {prefix} {module}'; // Todo: take the model as arguments for crud
+    protected $signature = 'module:make-service-class {model} {prefix} {module}';
 
     /**
      * The console command description.
@@ -79,8 +79,8 @@ class CreateServiceClassCommnad extends Command
     public function getStubVariables()
     {
         return [
-            'NAMESPACE'         => $this->getNamespace(),
-            'CLASS'        => $this->getServiceClassName(),
+            'NAMESPACE' => $this->getNamespace(),
+            'CLASS'     => $this->getServiceClassName(),
         ];
     }
 
@@ -117,7 +117,7 @@ class CreateServiceClassCommnad extends Command
      */
     public function getNamespace(): string
     {
-        is_null($this->nameSpace) ? $this->nameSpace = config('modules.namespace') . '\\' . $this->argument('module') . '\\Services' . '\\' . $this->argument('prefix') : $this->nameSpace;
+        is_null($this->nameSpace) ? $this->nameSpace = config('modules.namespace') . '\\' . $this->argument('module') . '\\Services\\' . $this->argument('prefix') : $this->nameSpace;
 
         return $this->nameSpace;
     }
