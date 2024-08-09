@@ -101,9 +101,9 @@ class CrudCommandHelper
 
     private function createModel(): self
     {
-        $createModelCommand = $this->modelName . ' -m --fillable=' . implode(',', $this->modelFillable) . ' ';
+        $createModelCommand = $this->modelName . ' ' . implode(',', $this->modelFillable) . ' ';
 
-        $this->callArtisan('module:make-model ' . $createModelCommand . $this->moduleName);
+        $this->callArtisan('module:make-custom-model ' . $createModelCommand . $this->moduleName);
 
         $this->setMessage('Model ' . $this->modelName . ' Created.');
 
