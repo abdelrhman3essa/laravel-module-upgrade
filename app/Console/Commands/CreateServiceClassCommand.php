@@ -2,11 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\traits\CreateStubHelper;
 use Illuminate\Console\Command;
-use Illuminate\Filesystem\Filesystem;
 
 class CreateServiceClassCommand extends Command
 {
+    use CreateStubHelper;
+
     /**
      * The name and signature of the console command.
      *
@@ -22,94 +24,17 @@ class CreateServiceClassCommand extends Command
     protected $description = 'Create as custom service class.';
 
     /**
-     * Namespace.
-     */
-    private ?string $nameSpace = null;
-
-    /**
-     * Service class name.
-     */
-    private ?string $serviceClassName = null;
-
-    /**
-     * Create a new command instance.
-     * @param Filesystem $files
-     */
-    public function __construct(private Filesystem $files)
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      */
     public function handle()
     {
-        $path = $this->getSourceFilePath();
+        $this->setStubPath(__DIR__ . '/stubs/service.stub');
 
-        $this->makeDirectory(dirname($path));
+        $this->setStubVariables([
+            //
+        ]);
 
-        $contents = $this->getSourceFile();
-
-        if (!$this->files->exists($path)) {
-            $this->files->put($path, $contents);
-            $this->info("File : {$path} created");
-        } else {
-            $this->info("File : {$path} already exits");
-        }
-    }
-
-    /**
-     * Return the stub file path
-     * @return string
-     *
-     */
-    public function getStubPath()
-    {
-        return __DIR__ . '/stubs/service.stub';
-    }
-
-    /**
-     **
-     * Map the stub variables present in stub to its value
-     *
-     * @return array
-     *
-     */
-    public function getStubVariables()
-    {
-        return [
-            'NAMESPACE' => $this->getNamespace(),
-            'CLASS'     => $this->getServiceClassName(),
-        ];
-    }
-
-    /**
-     * Replace the stub variables(key) with the desire value
-     *
-     * @param $stub
-     * @param array $stubVariables
-     * @return bool|mixed|string
-     */
-    public function getStubContents($stub, $stubVariables = [])
-    {
-        $contents = file_get_contents($stub);
-
-        foreach ($stubVariables as $search => $replace) {
-            $contents = str_replace('$' . $search . '$', $replace, $contents);
-        }
-
-        return $contents;
-    }
-
-    /**
-     * Get the full path of generate class
-     *
-     * @return string
-     */
-    public function getSourceFilePath()
-    {
-        return base_path($this->getNamespace()) . '\\' . $this->getServiceClassName() . '.php';
+        $this->createStub();
     }
 
     /**
@@ -125,37 +50,10 @@ class CreateServiceClassCommand extends Command
     /**
      * Get service class name
      */
-
-    public function getServiceClassName(): string
+    public function getClassName(): string
     {
-        is_null($this->serviceClassName) ? $this->serviceClassName = $this->argument('model') . 'Service' : $this->serviceClassName;
+        is_null($this->className) ? $this->className = $this->argument('model') . 'Service' : $this->className;
 
-        return $this->serviceClassName;
-    }
-
-    /**
-     * Get the stub path and the stub variables
-     *
-     * @return bool|mixed|string
-     *
-     */
-    public function getSourceFile()
-    {
-        return $this->getStubContents($this->getStubPath(), $this->getStubVariables());
-    }
-
-    /**
-     * Build the directory for the class if necessary.
-     *
-     * @param  string  $path
-     * @return string
-     */
-    protected function makeDirectory($path)
-    {
-        if (! $this->files->isDirectory($path)) {
-            $this->files->makeDirectory($path, 0777, true, true);
-        }
-
-        return $path;
+        return $this->className;
     }
 }
