@@ -29,7 +29,7 @@ class CrudCommandHelper
 
         $this->callArtisan($createModuleCommand);
 
-        $this->setMessage('Module ' . $this->moduleName . ' Created.');
+        $this->setMessage('Module: ' . $this->moduleName . ' Created.');
     }
 
     public function setModuleName(string $name): void
@@ -74,16 +74,31 @@ class CrudCommandHelper
 
     private function createRequests(): self
     {
-        $storeRequestCommand = $this->prefix . '/Store' . $this->modelName . 'Request ';
-        $updateRequestCommand = $this->prefix . '/Update' . $this->modelName . 'Request ';
+        return $this->createStoreRequest()->createUpdateRequest();
+    }
 
-        $this->callArtisan('module:make-request ' . $storeRequestCommand . $this->moduleName);
+    private function createStoreRequest(): self
+    {
+        $requestName = 'Store' . $this->modelName . 'Request ';
 
-        $this->setMessage('Request ' . $storeRequestCommand . ' Created.');
+        $storeRequestCommand = $requestName . $this->stringFillable() . ' ' . $this->preparedPrefix() . ' ';
 
-        $this->callArtisan('module:make-request ' . $updateRequestCommand . $this->moduleName);
+        $this->callArtisan('module:make-request-class ' . $storeRequestCommand . $this->moduleName);
 
-        $this->setMessage('Request ' . $storeRequestCommand . ' Created.');
+        $this->setMessage('Store Request: ' . $this->namespacePrefix() . '/Http/Requests/' . $this->prefix . '/' . $requestName . '.');
+
+        return $this;
+    }
+
+    private function createUpdateRequest(): self
+    {
+        $requestName = 'Update' . $this->modelName . 'Request ';
+
+        $updateRequestCommand = $requestName . $this->stringFillable() . ' ' . $this->preparedPrefix() . ' ';
+
+        $this->callArtisan('module:make-request-class ' . $updateRequestCommand . $this->moduleName);
+
+        $this->setMessage('Update Request: ' . $this->namespacePrefix() . '/Http/Requests/' . $this->prefix . '/' . $requestName . '.');
 
         return $this;
     }
@@ -101,7 +116,7 @@ class CrudCommandHelper
 
     private function createModel(): self
     {
-        $createModelCommand = $this->modelName . ' ' . implode(',', $this->modelFillable) . ' ';
+        $createModelCommand = $this->modelName . ' ' . $this->stringFillable() . ' ';
 
         $this->callArtisan('module:make-custom-model ' . $createModelCommand . $this->moduleName);
 
@@ -134,7 +149,7 @@ class CrudCommandHelper
 
     private function createService(): self
     {
-        $this->callArtisan('module:make-service-class ' . $this->modelName . ' ' . str_replace('/', '\\\\', $this->prefix) . ' ' . $this->moduleName);
+        $this->callArtisan('module:make-service-class ' . $this->modelName . ' ' . $this->preparedPrefix() . ' ' . $this->moduleName);
 
         $this->setMessage('Service ' . $this->moduleName . '/Services/' . $this->prefix . $this->modelName . 'Service' . ' Created.');
 
@@ -154,5 +169,20 @@ class CrudCommandHelper
     public function getMessages(): array
     {
         return $this->messages;
+    }
+
+    private function stringFillable(): string
+    {
+        return implode(',', $this->modelFillable);
+    }
+
+    private function preparedPrefix(): string
+    {
+        return str_replace('/', '\\\\', $this->prefix);
+    }
+
+    private function namespacePrefix(): string
+    {
+        return config('modules.namespace') . '/' . $this->moduleName;
     }
 }

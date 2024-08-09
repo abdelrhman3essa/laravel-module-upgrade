@@ -52,6 +52,8 @@ trait CreateStubHelper
         } else {
             $this->info("File : {$path} already exits");
         }
+
+        $this->resetClass();
     }
 
     /**
@@ -155,5 +157,13 @@ trait CreateStubHelper
         }
 
         return $path;
+    }
+
+    private function resetClass(): void
+    {
+        $this->nameSpace = null;
+        $this->className = null;
+        $this->stubPath = null;
+        $this->stubVariables = [];
     }
 }
