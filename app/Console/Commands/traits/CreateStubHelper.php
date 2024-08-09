@@ -98,7 +98,7 @@ trait CreateStubHelper
     public function setStubVariables(array $stubVariables)
     {
         $this->stubVariables = $stubVariables + [
-            'NAMESPACE' => $this->getNamespace(),
+            'NAMESPACE' => str_replace('\\app', '', $this->getNamespace()),
             'CLASS'     => $this->getClassName(),
         ];
     }
