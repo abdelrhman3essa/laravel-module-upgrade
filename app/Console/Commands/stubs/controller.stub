@@ -1,0 +1,60 @@
+<?php
+
+namespace $NAMESPACE$;
+
+$MODEL_IMPORT$
+use Illuminate\Http\Request;
+$SERVICE_IMPORT$
+$STORE_REQUEST_IMPORT$
+$UPDATE_REQUEST_IMPORT$
+use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\Controller;
+
+class $CLASS$ extends Controller
+{
+    public function __construct(private $SERVICE$ $$CAMEL_SERVICE$)
+    {
+    }
+
+    public function index()
+    {
+        $data = $this->$CAMEL_SERVICE$->index();
+
+        return response()->json([]);
+    }
+
+    public function store($STORE_REQUEST$ $request): JsonResponse
+    {
+        $data = $this->$CAMEL_SERVICE$->store($request->validated());
+
+        return response()->json([]);
+    }
+
+    public function show($MODEL$ $CAMEL_MODEL$): JsonResponse
+    {
+        $data = $this->$CAMEL_SERVICE$->show($CAMEL_MODEL$);
+
+        return response()->json([]);
+    }
+
+    public function update($UPDATE_REQUEST$ $request, $MODEL$ $CAMEL_MODEL$): JsonResponse
+    {
+        $data = $this->$CAMEL_SERVICE$->update($request->validated(), $CAMEL_MODEL$);
+
+        return response()->json([]);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy($MODEL$ $CAMEL_MODEL$): JsonResponse
+    {
+        $this->$CAMEL_SERVICE$->destroy($CAMEL_MODEL$);
+
+        return response()->json([]);
+    }
+}
+
+/**
+* ROUTES : Route::apiResource('$CAMEL_MODEL$', $CLASS$::class);
+*/

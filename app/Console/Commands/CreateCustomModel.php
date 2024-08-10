@@ -4,11 +4,12 @@ namespace App\Console\Commands;
 
 use Illuminate\Support\Str;
 use Illuminate\Console\Command;
+use App\Console\Commands\traits\CommandHelper;
 use App\Console\Commands\traits\CreateStubHelper;
 
 class CreateCustomModel extends Command
 {
-    use CreateStubHelper;
+    use CreateStubHelper, CommandHelper;
 
     /**
      * The name and signature of the console command.

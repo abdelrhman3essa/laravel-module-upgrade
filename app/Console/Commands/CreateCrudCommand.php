@@ -40,13 +40,13 @@ class CreateCrudCommand extends Command
             ->getModelFillable()
             ->getPrefix();
 
-        $this->info('Creating the crud files ...');
+        $this->info('.......... Creating the crud files ..........');
 
         $this->crudCommandHelper->createCrudFiles();
 
         $this->showMessages($this->crudCommandHelper->getMessages());
 
-        $this->info('Crud files created successfully ...');
+        $this->info('.......... Crud files created successfully ..........');
     }
 
     private function getModuleName(): self
